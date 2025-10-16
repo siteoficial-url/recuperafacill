@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Alerta de Reembolso Urgente 🚨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* cores de acordo com o pedido */
+            --highlight-green: #28a745; /* verde vivo para destaque (agora também para cabeçalho/borda) */
+            --danger-red: #dc3545;      /* vermelho para ênfase no alarme (apenas alertas de texto) */
+            --light-green: #d4edda;     /* verde claro para fundo de alerta */
+            --border-green: #c3e6cb;    /* borda verde para o alerta */
+            --text-dark: #212529;       /* texto escuro */
+            --bg-light: #f8f9fa;        /* fundo da página */
+            --bg-white: #ffffff;        /* fundo do container */
+
+            /* cores para a seção legal */
+            --primary-blue: #007bff;
+            --secondary-green-legal: #28a745; 
+            --border-light: #e9ecef;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        /* estilos da página principal */
+        header {
+            background-color: var(--highlight-green); /* ALTERADO: Faixa verde viva */
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: var(--bg-white);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            border-top: 8px solid var(--highlight-green); /* ALTERADO: Borda superior verde viva */
+        }
+        .title-alert {
+            font-family: 'Poppins', sans-serif;
+            color: var(--danger-red); /* Mantido vermelho para a atenção do alerta */
+            font-size: 26px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(220, 53, 69, 0.5); 
+        }
+        .highlight-value-box {
+            background-color: var(--light-green); 
+            padding: 20px 0;
+            margin: 20px 0 30px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-green);
+            text-align: center;
+        }
+        .highlight-value {
+            color: var(--highlight-green);
+            font-family: 'Poppins', sans-serif;
+            font-size: 48px;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        strong {
+            font-weight: 700;
+        }
+        
+        /* botões */
+        .cta-button {
+            background-color: var(--highlight-green);
+            color: white;
+            padding: 18px 30px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        .cta-button:hover {
+            background-color: #1e7e34;
+            transform: translateY(-2px);
+        }
+        /* Efeito de carregamento para o botão */
+        .cta-button.loading {
+            background-color: #6c757d; /* Cinza durante o delay */
+            cursor: not-allowed;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);}
+            70% {box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);}
+            100% {box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);}
+        }
+
+        /* novo botão para informações legais */
+        .legal-button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+        .legal-button:hover {
+            background-color: #0056b3;
+        }
+
+        .warning-text {
+            color: var(--danger-red);
+            font-weight: 700;
+        }
+        .bold-green {
+            color: var(--highlight-green);
+            font-weight: 700;
+        }
+        .cta-final-text {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* --- estilos do modal de informação legal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .legal-box {
+            max-width: 80%;
+            min-width: 300px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border-left: 8px solid var(--primary-blue);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            margin: 50px 0;
+        }
+
+        .modal-overlay.active .legal-box {
+            transform: scale(1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: 900;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: var(--danger-red);
+        }
+
+        .section-title-modal {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .key-point {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e9f7ee;
+            border: 1px solid var(--border-light);
+        }
+
+        .key-point h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary-green-legal);
+            display: flex;
+            align-items: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .key-point h3::before {
+            content: '✔️';
+            margin-right: 10px;
+            font-size: 1.5rem;
+            color: var(--secondary-green-legal);
+        }
+
+        .highlight-modal {
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .summary-modal {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-light);
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        DADOS CARREGADOS COM SUCESSO!
+    </header>
+
+    <div class="container">
+        <p class="title-alert">
+            🚨 ATENÇÃO: COMPRAS FRAUDULENTAS EM SEUS DADOS! 🚨
+        </p>
+        
+        <div class="highlight-value-box">
+             <p class="message" style="text-align: center; margin-bottom: 5px; font-weight: 500;">
+                <span class="bold-green">💥 Você pode receber até</span>
+            </p>
+            <p class="highlight-value">R$4.932,77 <span style="font-size: 20px; vertical-align: super;"> indenização e danos morais!</span></p>
+        </div>
+        
+        <p class="message">
+            Após uma análise detalhada, encontramos compras realizadas em sites e aplicativos falsos com os seus dados. Após denúncias, esses sites foram removidos da internet, mas o impacto já afetou suas finanças e segurança.
+        </p>
+
+        <p class="message warning-text">
+            ⚠️ O tempo está contra você! Golpistas frequentemente utilizam ferramentas e softwares de camuflagem de dados, ocultando informações como CPF e CNPJ, o que dificulta ainda mais a identificação dos responsáveis. As informações públicas sobre os golpistas e envolvidos podem ser removidas futuramente, o que tornará o processo de reembolso quase impossível. Se não agir agora, você pode perder a chance de recuperar o que é seu por direito!
+        </p>
+
+        <p class="message">
+            Contamos com uma <span class="bold-green">equipe especializada</span>, com vasta experiência em recuperar valores de vítimas de golpes online. Já ajudamos milhares de pessoas a reverterem a situação e garantir seus direitos. Estamos prontos para ajudar você a recuperar o que é seu de forma rápida e segura.
+        </p>
+        
+        <button class="cta-button" onclick="initiateReimbursement(this)">
+            Clique e Inicie seu Reembolso AGORA
+        </button>
+
+        <button class="legal-button" onclick="openModal()">
+            Entenda o Amparo Legal: Direito do Consumidor
+        </button>
+        
+        <p class="cta-final-text">
+            Não perca mais tempo!
+        </p>
+
+    </div>
+
+    <div id="legal-info-modal" class="modal-overlay" onclick="closeModalOutside(event)">
+        <div class="legal-box">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            
+            <div class="section-title-modal">
+                🛡️ Seu Direito de Recuperar o Dinheiro de Golpes Online
+            </div>
+
+            <p style="text-align: justify; margin-bottom: 30px;">
+                No Brasil, o consumidor vítima de fraude e golpes online tem forte amparo legal, sustentado pelo 
+                <span class="highlight-modal">Código de Defesa do Consumidor (CDC)</span> e pela jurisprudência consolidada.
+            </p>
+
+            <div class="key-point">
+                <h3>Reembolso Garantido (Dano Material)</h3>
+                <p style="text-align: justify;">
+                    O <span class="highlight-modal">Superior Tribunal de Justiça (STJ)</span>, através da **Súmula 479**, estabelece que as instituições financeiras respondem objetivamente por fraudes e delitos praticados por terceiros em suas operações. Se o golpe ocorreu no ambiente bancário ou digital, o banco é responsável pela segurança e tem o dever de ressarcir o valor perdido (Fortuito Interno).
+                </p>
+            </div>
+
+            <div class="key-point">
+                <h3>Indenização (Dano Moral)</h3>
+                <p style="text-align: justify;">
+                    Além do reembolso, você pode ter direito a indenização por danos morais. A Justiça reconhece o abalo psicológico, o estresse e a violação da segurança patrimonial causados pelo golpe e pela <span class="highlight-modal">negligência da instituição</span> em resolver o problema.
+                </p>
+            </div>
+
+            <div class="summary-modal">
+                **Aja Rápido:** A velocidade em que você formaliza a reclamação e busca seus direitos é crucial para o sucesso da recuperação. Não perca tempo!
+            </div>
+            
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById('legal-info-modal');
+        const REDIRECT_LINK = 'https://siteoficial-url.github.io/recupera-facil-/'; // NOVO LINK
+        const DELAY_MS = 2000; // 2 segundos
+
+        function initiateReimbursement(button) {
+            // Evita cliques múltiplos durante o delay
+            if (button.classList.contains('loading')) {
+                return;
+            }
+
+            // Mudar o texto e adicionar o estado de carregamento/animação
+            button.textContent = 'CARREGANDO SEUS DADOS...';
+            button.classList.add('loading');
+
+            // Configurar o delay de 2 segundos (2000 milissegundos)
+            setTimeout(() => {
+                window.location.href = REDIRECT_LINK;
+            }, DELAY_MS);
+        }
+
+
+        // Funções do Modal (Inalteradas)
+        function openModal() {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300); 
+        }
+
+        function closeModalOutside(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+</body>
+</html>
